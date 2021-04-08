@@ -14,16 +14,20 @@
 %                               assuming the participant is standing still
 %          .initOrientation     vector specifying the vertical direction
 %          .nSmooth:            moving average time size
-%          .idxMaxDivergence    maximum tolerable difference between 
-%                               idxXMax and idxDZMax in order to prefer
-%                               idxDZMax; if not then prefer idxDXMax
-%          .idxOffset:          final fixed adjustment to takeoff index 
+%          .idxMaxDivergence    
+%          .freefallThreshold:  acceleration below which body is assumed
+%                               to be in freefall (i.e. < 1 g)
+%          .maxSpikeWidth:      max gap between acceleration spikes after 
+%                               landing to prevent false detections
+%          .freefallRange:      search range when the body is expect to be
+%                               in freefall
+%          .idxOffset:          final fixed adjustment to landing index 
 %
 %
 % Output:
-%       idxTakeoff:  detected takeoff index
+%       idxLanding:  detected landing index
+%       idxImpact:   detect impact index
 %       rmse:        error with true landing index
-%       constraint:  optimiser information 
 %
 % ************************************************************************
 
