@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="key0" for="edge" attr.name="component" attr.type="string" />
+  <key id="key1" for="graph" attr.name="graph.root" attr.type="string" />
+  <key id="key2" for="node" attr.name="node.path" attr.type="string" />
+  <key id="key3" for="node" attr.name="node.type" attr.type="string" />
+  <key id="key4" for="edge" attr.name="reference" attr.type="string" />
+  <key id="key5" for="edge" attr.name="relationship" attr.type="string" />
+  <key id="key6" for="edge" attr.name="type" attr.type="string" />
+  <graph id="G" edgedefault="directed" parse.nodeids="canonical" parse.edgeids="canonical" parse.order="nodesfirst">
+   <data key="key1">/Users/markgewhite/Google Drive/PhD/MATLAB/Studies/accModel</data>
+    <node id="n0">
+      <data key="key2">$/assemblePredictors.m</data>
+      <data key="key3">File</data>
+    </node>
+    <node id="n1">
+      <data key="key2">ML</data>
+      <data key="key3">Product</data>
+    </node>
+    <edge id="e0" source="n0" target="n1">
+      <data key="key0"></data>
+      <data key="key4"></data>
+      <data key="key5">Toolbox</data>
+      <data key="key6">Toolbox</data>
+    </edge>
+  </graph>
+</graphml>
