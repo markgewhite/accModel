@@ -1,0 +1,3 @@
+[submodule "smOptimiser"]
+	path = smOptimiser
+	url = https://github.com/markgewhite/smOptimiser
