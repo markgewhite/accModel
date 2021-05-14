@@ -64,11 +64,11 @@ for i = 1:nSets
         % determine the FPCs based on the training data
         
         % amplitude FPCs
-        fpca{i} = pca_fd( trainFd, nComp, paramsFd, opt.doCentreFunctions );
+        fpca{i} = pca_fd2( trainFd, nComp, paramsFd, opt.doCentreFunctions );
 
         if opt.doFPCApartitioningComparison
             % for comparison, generate FPCs for full dataset
-            pca_full = pca_fd( dataFd{i}, nComp,   ...
+            pca_full = pca_fd2( dataFd{i}, nComp,   ...
                                     paramsFd, opt.doCentreFunctions );
             compareFPCAPartitions( fpca{i}, pca_full );
         end
@@ -80,7 +80,7 @@ for i = 1:nSets
         if doWarp
             % temporal FPCs
             trainWFd = warpFd( trainSelect );           
-            pcaWarp = pca_fd( trainWFd, nCompWarp, paramsFd, opt.doCentreFunctions );
+            pcaWarp = pca_fd2( trainWFd, nCompWarp, paramsFd, opt.doCentreFunctions );
             if opt.doVarimax
                 pcaWarp = varmx_pca( pcaWarp );
             end
@@ -125,14 +125,14 @@ for i = 1:nSets
         % determine the FPCs based on all the data
         
         % amplitude FPCs
-        fpca{i} = pca_fd( dataFd{i}, nComp, paramsFd, opt.doCentreFunctions );
+        fpca{i} = pca_fd2( dataFd{i}, nComp, paramsFd, opt.doCentreFunctions );
         if opt.doVarimax
             fpca{i} = varmx_pca( fpca{i} );
         end
         
         if doWarp
             % temporal FPCs
-            pcaWarp = pca_fd( warpFd, nCompWarp, paramsFd, opt.doCentreFunctions );
+            pcaWarp = pca_fd2( warpFd, nCompWarp, paramsFd, opt.doCentreFunctions );
             if opt.doVarimax
                 pcaWarp = varmx_pca( pcaWarp );
             end
