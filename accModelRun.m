@@ -30,14 +30,12 @@
 % ************************************************************************
 
 
-function [ obj, constraints, info ] = accModelRun( ...
-                                            data, ...
-                                            subsamplingMethod, ...
-                                            trnIdxAll, valIdxAll, ...
-                                            options, ...
-                                            hp )
+function [ obj, constraints, info ] = accModelRun( hp, data, options, ...
+                                                   dataIdx )
 
 
+specificSplit = (nargin == 4);
+                                               
 % ------------------------------------------------------------
 %   Unpack the hyperparmeters
 % ------------------------------------------------------------
@@ -53,10 +51,13 @@ if ~isempty( hp )
         optVar = options.optimize.var(i);
         j = j + 1;
         if strcmp( options.optimize.varDef(i).Type, 'categorical' )
-            if islogical( hp{j} )
-                optValue = hp{j};
-            else
-                optValue = char( hp{j} );
+            switch hp{j}
+                case 'false'
+                    optValue = false;
+                case 'true'
+                	optValue = true;
+                otherwise
+                    optValue = char( hp{j} );
             end
         else
             optValue = options.optimize.fcn{i}( hp{j} );
@@ -75,8 +76,7 @@ end
 Y = data.outcome;
 S = data.subject;
 
-tTakeoff = data.takeoff;
-tLanding = data.landing;
+tLanding = data.landingTime;
 
 % selected desired synchronisation to desired set of points
 switch options.data.jumpDetection
@@ -95,12 +95,6 @@ switch options.data.jumpDetection
     case 'ImpactACC'  
         syncIdx = data.impactACC;
         
-    case 'Power1ACC'  
-        syncIdx = data.power1ACC;
-        
-    case 'Power2ACC'  
-        syncIdx = data.power2ACC;
-        
     otherwise
         error('Unrecognised Jump Detection Method.');
 
@@ -115,11 +109,11 @@ end
 nSensors = (length( options.data.sensors )+1)/3;
 sensor = contains( options.data.sensorCodes, options.data.sensors(1:2) );
 signal = cell( nSensors, 1 );
-signal{1} = data.signal{ sensor };
+signal{1} = data.signal.(options.data.sensorCodes{sensor});
 for i = 2:nSensors
     sensor = contains( options.data.sensorCodes, ...
                         options.data.sensors(i*3-2:i*3-1) );
-    signal{i} = data.signal{ sensor }; 
+    signal{i} = data.signal.(options.data.sensorCodes{sensor});
 end
 
 
@@ -133,8 +127,6 @@ Y = Y( filter );
 S = S( filter );
 tLanding = tLanding( filter );
 syncIdx = syncIdx( filter );
-trnIdxAll = trnIdxAll( filter );
-valIdxAll = valIdxAll( filter );
 for i = 1:nSensors
     signal{i} = signal{i}( filter, :, : );
 end
@@ -144,39 +136,16 @@ end
 %  define a single partition, if required, per evaluation
 % ------------------------------------------------------------
         
-switch subsamplingMethod
+% create multiple sub-partitions within training fold
+if specificSplit
+    trnIdx = dataIdx;
+    valIdx = ~dataIdx;
     
-    case 'Single'
-        opt1Partition = options.part.inner;
-        opt1Partition.iterations = 1;
-        [ trnIdxInner, valIdxInner ] = partitionData( ...
-                                    Y( trnIdxAll ), ...
-                                    S( trnIdxAll ), ...
-                                    options.part.inner );
-        trnIdx = trnIdxAll*ones(1,size(trnIdxInner,2));
-        valIdx = trnIdx;
-        trnIdx( trnIdxAll, : ) = trnIdxInner;
-        valIdx( trnIdxAll, : ) = valIdxInner;
-        
-    case 'Repeated'
-        % create multiple sub-partitions within training fold
-        [ trnIdxInner, valIdxInner ] = partitionData( ...
-                                    Y( trnIdxAll ), ...
-                                    S( trnIdxAll ), ...
-                                    options.part.inner );
-        % convert the shorter inner array to full array
-        trnIdx = repelem( trnIdxAll, 1, size(trnIdxInner,2) );
-        valIdx = trnIdx;
-        trnIdx( trnIdxAll, : ) = trnIdxInner;
-        valIdx( trnIdxAll, : ) = valIdxInner;
-        
-    case 'Specified'
-        % use the provided partition without modification
-        trnIdx = trnIdxAll;
-        valIdx = valIdxAll;
-        % enforce FPC partitioning since only one iteration
-        options.fpca.doFPCApartitioning = true;
-               
+else
+    [ trnIdx, valIdx ] = partitionData( ...
+                            Y, ...
+                            S, ...
+                            options.part.inner );
 end
 
 nPartitions = size( trnIdx, 2 );

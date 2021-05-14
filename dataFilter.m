@@ -21,7 +21,6 @@ if opt.doReduceSample
     opt.method = opt.reducedSampleMethod; % put it in correct structure
     opt.kFolds = 0;
     f = partitionData( data.outcome, data.subject, opt );
-    %disp(['Sample size = ' num2str(sum(f)) ]);
 end
 
 % jump type
@@ -50,15 +49,5 @@ switch opt.perfLevel
         f = f & data.perfLevel==3;
 end
 
-% extra jumps
-if isfield( opt, 'doIncludeExtraJumps' )
-    if ~opt.doIncludeExtraJumps
-        f = logical([f(1:219)' ...
-            1	1	1	1	0	0	0	0	1	1	1	1	0	0	0	0	...
-            0	0	0	0	1	1	1	1	0	0	0	0	1	1	1	1	...
-            0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	...
-            0	0	0	0	0	0	0	0 ]');
-    end
-end
     
 end

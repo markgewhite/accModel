@@ -37,7 +37,7 @@ switch options.filter.method
                             options.plot.doShowLengthScaling );
                         
     case 'Annealing'
-        p = logical( table2array( struct2table( options.predictor ) ) );
+        p = logical( table2array( struct2table(options.filter.predictor) ) );
         pOrder = 1:np;
         r = zeros( np, 1 );
 
