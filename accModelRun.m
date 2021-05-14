@@ -480,16 +480,6 @@ for k = 1:nPartitions
     % --------------------------------------------------------
 
     if options.sampling.doFeatureBased
-
-        if options.sampling.showDistribution && m == 1 && i == 1
-            plotNames = [ {'Peak Power'} ...
-                        	trnX.Properties.VariableNames ];
-            figure(1);
-            clf;
-            plotDistribution( [ trnY ...
-                                table2array( trnX ) ], ...
-                                plotNames, true );
-        end
         
         % resample the data specifically for this fold
         
@@ -513,18 +503,6 @@ for k = 1:nPartitions
         % remove the specified rows
         trnX( removal, : ) = [];
         trnY( removal ) = [];
-
-        
-        if options.sampling.showDistribution && m == 1 && i ==1
-            plotDistribution( [ trnY ...
-                                table2array( trnX ) ], ...
-                                [], true );
-            plotDistribution( [ valY ...
-                                table2array( valX ) ], ...
-                                [], false );
-            drawnow;
-            pause;
-        end
 
     end
 
@@ -769,6 +747,11 @@ for k = 1:nPartitions
                             (valIdxEnd-valIdxStart+1) );
 
               
+end
+
+% record the final model (specific split requested)
+if specificSplit
+    info.model = model;
 end
 
 if options.model.type(1) == 'C'

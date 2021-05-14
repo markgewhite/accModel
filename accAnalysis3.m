@@ -60,13 +60,15 @@ setup.kInnerFolds = 2;
 setup.nOuterLoop = 20; % 10
 setup.kOuterFolds = 10; % 10
 
-setup.nFit = 5; 
-setup.nSearch = 5;
+setup.nFit = 20; 
+setup.nSearch = 20;
 setup.nRepeats = 1;
-setup.nInterTrace = fix( 0.5*setup.nFit );
-setup.porousness = 0.05;
-setup.verbose = 1;
-setup.activeVar = [ 5, 6, 7, 8 ];
+setup.nInterTrace = 5;
+setup.porousness = 0.05; % 0.05;
+setup.verbose = 4;
+setup.showPlots = true;
+
+setup.activeVar = [ 5 6 7 8 ];
 
 setup.randomSeed = 0;
 
@@ -156,5 +158,6 @@ switch setup.method
 end
 
                        
-
+search = [ output.searchXTrace table(output.searchYTrace) ];
+model = fitglm( search );
 

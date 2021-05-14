@@ -69,7 +69,7 @@ opt.prcMaxLoss = 25;
 opt.constrain = true;
 opt.porousness = setup.porousness;
 
-opt.showPlots = true;
+opt.showPlots = setup.showPlots;
 opt.useSubPlots = true;
 
 opt.nRepeats = setup.nRepeats;
@@ -264,9 +264,9 @@ opt.lim{i} = [0.5 2.5];
 opt.bounds{i} = [0.50 2.49];
 opt.isLog(i) = false;
 opt.isCat(i) = true;
-opt.fcn{i} = [false true];
+opt.fcn{i} = {'false', 'true'};
 opt.varDef(i) = optimizableVariable( opt.var(i), ...
-        [1, 2], 'Type', 'integer', ...
+        opt.fcn{i}, 'Type', 'categorical', ...
         'Optimize', ismember( i, setup.activeVar ) );
     
 % LR parameters
@@ -351,9 +351,9 @@ opt.descr(i) = "Fixed Flight Time";
 opt.lim{i} = [];
 opt.isLog(i) = false;
 opt.isCat(i) = true;
-opt.fcn{i} = [false true];
+opt.fcn{i} = {'false', 'true'};
 opt.varDef(i) = optimizableVariable( opt.var(i), ...
-        [1, 2], 'Type', 'integer', ...
+        opt.fcn{i}, 'Type', 'categorical', ...
         'Optimize', ismember( i, setup.activeVar ) );
 
 i = i+1;
@@ -415,7 +415,7 @@ opt.isLog(i) = false;
 opt.isCat(i) = false;
 opt.fcn{i} = @(x) x;
 opt.varDef(i) = optimizableVariable( opt.var(i), ...
-        [15 200], 'Type', 'integer', ...
+        [48 58], 'Type', 'integer', ...
         'Optimize', ismember( i, setup.activeVar ) );
     
 i = i+1;
@@ -504,10 +504,10 @@ opt.lim{i} = [0.5 2.5];
 opt.bounds{i} = [0.5 2.49];
 opt.isLog(i) = false;
 opt.isCat(i) = true;
-opt.fcn{i} = [ false true ];
+opt.fcn{i} = {'false', 'true'};
 opt.varDef(i) = optimizableVariable( opt.var(i), ...
-        [1, 2], 'Type', 'integer', ...
-        'Optimize', ismember( i, setup.activeVar )  );
+        opt.fcn{i}, 'Type', 'categorical', ...
+        'Optimize', ismember( i, setup.activeVar ) );
 
 % feature selection parameters
 i = 30;
@@ -544,10 +544,10 @@ opt.lim{i} = [0.5 2.5];
 opt.bounds{i} = [0.5 2.49];
 opt.isLog(i) = false;
 opt.isCat(i) = true;
-opt.fcn{i} = [ false true ];
+opt.fcn{i} = {'false', 'true'};
 opt.varDef(i) = optimizableVariable( opt.var(i), ...
-        [1, 2], 'Type', 'integer', ...
-        'Optimize', ismember( i, setup.activeVar )  );
+        opt.fcn{i}, 'Type', 'categorical', ...
+        'Optimize', ismember( i, setup.activeVar ) );
 
     
 % sample size reduction parameters

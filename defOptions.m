@@ -32,18 +32,18 @@ opt.data.reducedSampleMethod = 'ReduceSubject';
 opt.data.reducedSize = 25; % number of subjects
 opt.data.reducedSamplesPerSubject = 1; % jumps per subject
 
-opt.data.jumpDetection = 'TakeoffACC'; % alignment method
+opt.data.jumpDetection = 'TakeoffVGRF'; % alignment method
 opt.data.doIncludeExtraJumps = true;
 
 opt.preproc.useResultant = true; % resultant (1D) signal?
 opt.preproc.doFixedSeparation = false; % fix gap between windows (flight time)?
 opt.preproc.doPriorRotation = false;
 
-partitioning.method = 'MonteCarloSubject'; % LeaveOneOutSubject MonteCarloSubject
+partitioning.method = 'KFoldSubject'; % LeaveOneOutSubject MonteCarloSubject
 partitioning.doInversion = false;
 opt.doControlRandomisation = false;
 
-opt.fda.nBasis = 100; % number of bases (18) Ch5=100 Ch6=110 100
+opt.fda.nBasis = 23; % number of bases (18) Ch5=100 Ch6=110 100
 opt.fda.nBasisDensity = 1/20; % bases per time unit 
 opt.fda.lambda = 10^(4.80); % roughness penalty (4.80)
 opt.fda.useDensity = false; % whether of not to use a fixed number of bases
@@ -256,7 +256,6 @@ opt.truncation.values = 25:10:55;
 partitioning.doControlRandomisation = opt.doControlRandomisation;
 partitioning.randomSeed = setup.randomSeed;
 partitioning.iterations = 1;
-partitioning.method = 'MonteCarloSubject';
 partitioning.kFolds = 10;
 partitioning.split = [ 0.70, 0.0, 0.30 ];
 partitioning.trainSubset = 'Full';
