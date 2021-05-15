@@ -733,7 +733,11 @@ for k = 1:nPartitions
     end
 
     % record the training and validation values for this partition
-    info.trnX( trnIdxStart:trnIdxEnd, : ) = table2array( trnX );
+    if isa( trnX, 'table' )
+        info.trnX( trnIdxStart:trnIdxEnd, : ) = table2array( trnX );
+    else
+        info.trnX( trnIdxStart:trnIdxEnd, : ) = trnX;
+    end
     info.trnY( trnIdxStart:trnIdxEnd ) = trnY;
     info.valY( valIdxStart:valIdxEnd ) = valY;
     
