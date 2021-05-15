@@ -43,7 +43,7 @@ end
 % RandomSearch - perform a random search with optimisation
 % Fixed - evaluate a fixed model on training/validation data
 % Holdout - evaluate a fixed model on holdout data
-setup.method = 'smOptimiser';
+setup.method = 'GridSearch';
 setup.tFreq = 0.25; % sampling frequency per unit time
 setup.tNorm = 1000; % points per second
 setup.tLength = 2000; % max duration in milliseconds
@@ -61,11 +61,11 @@ setup.nOuterLoop = 20; % 10
 setup.kOuterFolds = 10; % 10
 
 setup.nFit = 20; 
-setup.nSearch = 20;
+setup.nSearch = 10;
 setup.nRepeats = 1;
 setup.nInterTrace = 5;
 setup.porousness = 0.05; % 0.05;
-setup.verbose = 4;
+setup.verbose = 1;
 setup.showPlots = true;
 
 setup.activeVar = [ 5 6 7 8 ];
@@ -119,17 +119,17 @@ disp(['Roughness = ' num2str(log10(options.fda.lambda))]);
 switch setup.method
     
     case 'GridSearch'
-        output = gridSearch( data, options );
-        
-    case 'RandomSearch'
-        output = randomSearch( data, options );
-        
+        [ outputs, models ] = gridSearch2( data, options, setup );
+               
     case 'smOptimiser'
         output = smOptimiserNCV( @accModelRun, ...
                                  options.optimize.varDef, ...
                                  options.optimize, ...
                                  data.noarms, ...
                                  options );
+                             
+        search = [ output.searchXTrace table(output.searchYTrace) ];
+        model = fitglm( search );
     
     case 'Fixed'
         n = length( data.outcome );
@@ -158,6 +158,87 @@ switch setup.method
 end
 
                        
-search = [ output.searchXTrace table(output.searchYTrace) ];
-model = fitglm( search );
+
+
+
+
+function [ outputs, models ] = gridSearch2( data, options, setup )
+
+algorithms = options.optimize.varDef(4).Range;
+sensors = data.sensors;
+jumpTypes = data.curves;
+
+nAlgorithms = length( algorithms );
+nSensors = length( sensors );
+nJumpTypes = length( jumpTypes );
+
+outputs = cell( nAlgorithms, nSensors, nJumpTypes );
+models = cell( nAlgorithms, nSensors, nJumpTypes );
+
+for a = 1:nAlgorithms
+    
+    options.model.type = algorithms{ a };
+    
+    switch a
+        case 1
+            setup.activeVar = [ 14 15 16 ];
+        case 2
+            setup.activeVar = [ 9 10 11 12 13 ];
+        case 3
+            setup.activeVar = [ 5 6 7 8 ];
+    end
+    options.optimize = defOptimiseVar( setup, options.data.nPredictors );
+    options.optimize.partitioning = options.part.outer;
+    
+    disp('*******************************');
+    disp(['Algorithm = ' options.model.type]);
+    disp('*******************************');   
+    
+    for s = 1:nSensors
+        
+        options.data.sensors = sensors{ s };
+
+        disp('*******************************');
+        disp(['Sensor = ' options.data.sensors]);
+        disp('*******************************');
+
+        for j = 1:nJumpTypes
+            
+            subset = data.(jumpTypes{ j });
+            options.optimize.nObs = length( data.(jumpTypes{j}).outcome );
+            options.optimize.subjects = subset.subject;
+            
+            disp('*******************************');
+            disp(['Jump Type = ' jumpTypes{j}]);
+            disp('*******************************');
+            
+            outputs{a,s,j} = smOptimiserNCV( @accModelRun, ...
+                                             options.optimize.varDef, ...
+                                             options.optimize, ...
+                                             subset, ...
+                                             options );
+                                         
+            search = [ outputs{a,s,j}.searchXTrace ...
+                                table(outputs{a,s,j}.searchYTrace) ];
+            models{a,s,j} = fitglm( search );
+            
+            if ismac 
+                save( fullfile(setup.datapath, ...
+                        'smOptimiser Results (MAC).mat'), ...
+                        'outputs','models' );
+            else
+                save( fullfile(setup.datapath, ...
+                        'smOptimiser Results (PC).mat'), ...
+                        'outputs','models' );
+            end
+                                         
+        end
+        
+    end
+    
+end
+
+
+
+end
 
