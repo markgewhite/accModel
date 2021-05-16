@@ -56,7 +56,7 @@ opt.objective = 'Loss';
 %opt.maxIter = 10000;
 
 opt.initMaxLoss = 100; 
-opt.maxTries = 50;
+opt.maxTries = 500;
 opt.tolPSO = 0.01;
 opt.tolFMin = 0.001;
 opt.maxIter = 10000;
@@ -65,9 +65,13 @@ opt.quasiRandom = false;
 
 opt.nFit = setup.nFit; 
 opt.nSearch = setup.nSearch; 
-opt.prcMaxLoss = 25;
+opt.prcMaxLoss = 50;
 opt.constrain = true;
 opt.porousness = setup.porousness;
+opt.window = setup.window;
+opt.cap = 10;
+opt.sigmaLB = 0.1;
+opt.sigmaUB = 0.5;
 
 opt.showPlots = setup.showPlots;
 opt.useSubPlots = true;
@@ -429,7 +433,7 @@ opt.isLog(i) = true;
 opt.isCat(i) = false;
 opt.fcn{i} = @(x) 10^x;
 opt.varDef(i) = optimizableVariable( opt.var(i), ...
-        [0 12], 'Type', 'real', ...
+        [-12 12], 'Type', 'real', ...
         'Optimize', ismember( i, setup.activeVar ) );
 %opt.lim{i} = [0, 10];
 %opt.bounds{i} = [1 51];
