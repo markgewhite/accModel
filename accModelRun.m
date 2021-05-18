@@ -70,6 +70,24 @@ end
 
 
 % ------------------------------------------------------------
+%   Check if constraints are violated
+% ------------------------------------------------------------
+
+% check if there are enough bases for the retained components
+constraints(1) = options.fpca.nRetainedComp - options.fda.nBasis;
+% check if the time window is not inverted
+constraints(2) = options.preproc.minLength ...
+                - (options.preproc.tLength1 + options.preproc.tLength2);
+% check if penalty order is at least two orders lower than basis order
+constraints(3) = -(options.fda.basisOrder - options.fda.penaltyOrder)+2;
+if any( constraints > 0 )
+    obj = 10;
+    info = 0;
+    return
+end
+
+
+% ------------------------------------------------------------
 %   Extract data
 % ------------------------------------------------------------
 
@@ -182,23 +200,6 @@ tSpan = -options.preproc.tLength1:1/tFreq:options.preproc.tLength2;
 % truncate the signals to the required window size
 for i = 1:nSensors
     sigX{ i }  = sigX{ i }( startIdx:endIdx, :, : );
-end
-
-if options.fda.useDensity
-    options.fda.nBasis = fix(options.fda.nBasisDensity*(length( tSpan )-1));
-end
-
-
-% ------------------------------------------------------------
-%   Check if constraints are violated
-% ------------------------------------------------------------
-
-constraints(1) = options.fpca.nRetainedComp - options.fda.nBasis;
-constraints(2) = 0.5-(endIdx-startIdx);
-if any( constraints > 0 )
-    obj = NaN;
-    info = 0;
-    return
 end
 
 
@@ -522,6 +523,17 @@ for k = 1:nPartitions
     % ------------------------------------------------------------
     %  Run the model
     % ------------------------------------------------------------
+    
+    % check for full column rank
+    HFcn = @(X)[ones(size(X,1),1),X,X.^2];
+    H = HFcn( table2array(trnX) );
+    if rank( H ) ~= size( H, 2 )
+        % not full column rank (some FPC scores are too small)
+        constraints(5) = 1;
+        info = 0;
+        obj = 10;
+        return;
+    end
 
     % Build the model with various options
     switch options.model.type
