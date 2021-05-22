@@ -43,13 +43,13 @@ partitioning.method = 'KFoldSubject'; % LeaveOneOutSubject MonteCarloSubject
 partitioning.doInversion = false;
 opt.doControlRandomisation = false;
 
-opt.fda.nBasis = 23; % number of bases (18) Ch5=100 Ch6=110 100
+opt.fda.nBasis = 56; % number of bases (18) Ch5=100 Ch6=110 100
 opt.fda.nBasisDensity = 1/20; % bases per time unit 
-opt.fda.lambda = 10^(4.80); % roughness penalty (4.80)
+opt.fda.lambda = 10^(-2.0); % roughness penalty (4.80)
 opt.fda.useDensity = false; % whether of not to use a fixed number of bases
 
 opt.fpca.doFPCApartitioning = true; % allow test data to be used for FPC calculation
-opt.fpca.nRetainedComp = 15; % retained components from FPCA 35
+opt.fpca.nRetainedComp = 17; % retained components from FPCA 35
 opt.fpca.nRetainedCompWarp = 3; % retained components from warp
 opt.fpca.doVarimax = false; % varimax rotations?
 
@@ -96,8 +96,8 @@ end
 % ************************************************************************
 
 opt.gpr.basis = 'None'; % None
-opt.gpr.kernel = 'Exponential'; % SquaredExponential
-opt.gpr.sigmaN0 = 10^(-2.20); % noise standard deviation (-2.20)
+opt.gpr.kernel = 'SquaredExponential'; % SquaredExponential
+opt.gpr.sigmaN0 = 10^(-0.61); % noise standard deviation (-2.20)
 opt.gpr.standardize = false; % false for Ch. 5
 opt.gpr.constSigma = true;
 opt.gpr.sigmaMin = 1E-4; % 1E-2 for over-sampling
@@ -142,6 +142,7 @@ opt.preproc.tLength2 = setup.postLength; % time window after take-off
 opt.preproc.maxLength = setup.tFreq*(setup.preLength+setup.postLength)+1; % max number of points
 opt.preproc.maxLength1 = setup.tFreq*setup.preLength+1; % max number of points
 opt.preproc.maxLength2 = setup.tFreq*setup.postLength+1; % max number of points
+opt.preproc.minLength = 50; % constraint in time intervals (not ms)
 
 opt.preproc.fixedSeparation = 250; % fixed separation if required
 opt.preproc.do3dTransform = false;
@@ -169,8 +170,8 @@ opt.fpca.doShowComponents = false;
 opt.fpca.doFPCApartitioningComparison = false;
 opt.fpca.doPlotComponents = false;
 
-opt.fda.basisOrder = 4; % 4th order for a basis expansion of cubic splines
-opt.fda.penaltyOrder = 2; % roughness penalty
+opt.fda.basisOrder = 5; % 4th order for a basis expansion of cubic splines
+opt.fda.penaltyOrder = 1; % 2nd order roughness penalty
 
 opt.reg.filename = fullfile(setup.datapath, 'ACCRegistration-JumpDetection6');
 opt.reg.nBasis = 15; % number of bases for temporal function

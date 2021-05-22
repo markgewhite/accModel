@@ -61,7 +61,7 @@ opt.tolPSO = 0.01;
 opt.tolFMin = 0.001;
 opt.maxIter = 10000;
 opt.verbose = setup.verbose;
-opt.quasiRandom = false;
+opt.quasiRandom = true;
 
 opt.nFit = setup.nFit; 
 opt.nSearch = setup.nSearch; 
@@ -70,8 +70,8 @@ opt.constrain = true;
 opt.porousness = setup.porousness;
 opt.window = setup.window;
 opt.cap = 10;
-opt.sigmaLB = 0.1;
-opt.sigmaUB = 0.5;
+opt.sigmaLB = 0.2;
+opt.sigmaUB = 1.0;
 
 opt.showPlots = setup.showPlots;
 opt.useSubPlots = true;
@@ -393,24 +393,6 @@ opt.varDef(i) = optimizableVariable( opt.var(i), ...
 % smoothing parameters
 i = 22;
 opt.grp(i) = "fda";
-opt.var(i) = "nBasisDensity";
-opt.descr(i) = "Basis Function Density / Data Point";
-opt.lim{i} = [-3 -1];
-opt.bounds{i} = [-3 -1];
-opt.isLog(i) = true;
-opt.isCat(i) = false;
-%opt.fcn{i} = [ 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, ...
-%                                 45, 50, 55, 60, 70, 80, 100, 125, 150 ]/1000;
-%opt.fcn{i} = 0.005:0.005:0.60;
-%opt.fcn{i} = (1:250)/1000;
-%opt.fcn{i} = 1./[ 60 30 20 15 12 10 6 5 4 3 2 1 ]; 
-opt.fcn{i} = @(x) 10^x;
-opt.varDef(i) = optimizableVariable( opt.var(i), ...
-        [-3 -1], 'Type', 'real', ...
-        'Optimize', ismember( i, setup.activeVar ) );
-
-i = i+1;
-opt.grp(i) = "fda";
 opt.var(i) = "nBasis";
 opt.descr(i) = "No. Basis Functions";
 opt.lim{i} = [15, 200];
@@ -419,7 +401,33 @@ opt.isLog(i) = false;
 opt.isCat(i) = false;
 opt.fcn{i} = @(x) x;
 opt.varDef(i) = optimizableVariable( opt.var(i), ...
-        [48 58], 'Type', 'integer', ...
+        [15 100], 'Type', 'integer', ...
+        'Optimize', ismember( i, setup.activeVar ) );
+    
+i = i+1;
+opt.grp(i) = "fda";
+opt.var(i) = "basisOrder";
+opt.descr(i) = "Basis Function Order";
+opt.lim{i} = [1, 7];
+opt.bounds{i} = [3 7];
+opt.isLog(i) = false;
+opt.isCat(i) = false;
+opt.fcn{i} = @(x) x;
+opt.varDef(i) = optimizableVariable( opt.var(i), ...
+        [3 6], 'Type', 'integer', ...
+        'Optimize', ismember( i, setup.activeVar ) );
+    
+i = i+1;
+opt.grp(i) = "fda";
+opt.var(i) = "penaltyOrder";
+opt.descr(i) = "Roughness Penalty Order";
+opt.lim{i} = [1, 5];
+opt.bounds{i} = [1 5];
+opt.isLog(i) = false;
+opt.isCat(i) = false;
+opt.fcn{i} = @(x) x;
+opt.varDef(i) = optimizableVariable( opt.var(i), ...
+        [1 4], 'Type', 'integer', ...
         'Optimize', ismember( i, setup.activeVar ) );
     
 i = i+1;
@@ -427,26 +435,17 @@ opt.grp(i) = "fda";
 opt.var(i) = "lambda";
 opt.descr(i) = "log_{10}\it\lambda\rm";
 opt.init{i} = 6;
-opt.lim{i} = [0 12];
-opt.bounds{i} = [0 12];
+opt.lim{i} = [-10 10];
+opt.bounds{i} = [-10 10];
 opt.isLog(i) = true;
 opt.isCat(i) = false;
 opt.fcn{i} = @(x) 10^x;
 opt.varDef(i) = optimizableVariable( opt.var(i), ...
-        [-12 12], 'Type', 'real', ...
-        'Optimize', ismember( i, setup.activeVar ) );
-%opt.lim{i} = [0, 10];
-%opt.bounds{i} = [1 51];
-%opt.isLog(i) = true;
-%opt.isCat(i) = false;
-%opt.fcn{i} = 10.^(-12:1:12);
-%opt.varDef(i) = optimizableVariable( opt.var(i), ...
-%        [1 25], 'Type', 'integer', ...
-%        'Optimize', ismember( i, setup.activeVar ) );
-    
+        [-10 10], 'Type', 'real', ...
+        'Optimize', ismember( i, setup.activeVar ) );   
     
 % registration parameters
-i = 25;
+i = 26;
 opt.grp(i) = "lm";
 opt.var(i) = "setApplied";
 opt.descr(i) = "Registration Landmark Sets";
@@ -481,13 +480,13 @@ opt.lim{i} = [0, 5];
 opt.bounds{i} = [0.5 5.49];
 opt.isLog(i) = false;
 opt.isCat(i) = false;
-ptions.optimize.fcn{i} = @(x) x;
+opt.fcn{i} = @(x) x;
 opt.varDef(i) = optimizableVariable( opt.var(i), ...
         [1, 5], 'Type', 'integer', ...
         'Optimize', ismember( i, setup.activeVar ) );
 
 % FPCA parameters
-i = 28;
+i = 29;
 opt.grp(i) = "fpca";
 opt.var(i) = "nRetainedComp";
 opt.descr(i) = "Number of Retained FPCs";
@@ -514,7 +513,7 @@ opt.varDef(i) = optimizableVariable( opt.var(i), ...
         'Optimize', ismember( i, setup.activeVar ) );
 
 % feature selection parameters
-i = 30;
+i = 31;
 opt.grp(i) = "filter";
 opt.var(i) = "rThreshold";
 opt.descr(i) = "Predictor Selection Threshold for correlation, \it r";
@@ -555,7 +554,7 @@ opt.varDef(i) = optimizableVariable( opt.var(i), ...
 
     
 % sample size reduction parameters
-i = 33;
+i = 34;
 opt.grp(i) = "data";
 opt.var(i) = "reducedSize";
 opt.descr(i) = "Sample Size (Subjects)";
@@ -582,7 +581,7 @@ opt.varDef(i) = optimizableVariable( opt.var(i), ...
         'Optimize', ismember( i, setup.activeVar ) );
 
 % data augmentation parameters
-i = 35;
+i = 36;
 opt.grp(i) = "sampling";
 opt.var(i) = "nWeightings";
 opt.descr(i) = "Number of Weightings";
@@ -635,7 +634,7 @@ opt.varDef(i) = optimizableVariable( opt.var(i), ...
         'Optimize', ismember( i, setup.activeVar ) );
 
 % over-sampling rotation method
-i = 39;
+i = 40;
 opt.grp(i) = "sampling";
 opt.var(i) = "angSD";
 opt.descr(i) = strcat("Random Rotation SD (", char(176), ")");
@@ -675,7 +674,7 @@ opt.varDef(i) = optimizableVariable( opt.var(i), ...
         'Optimize', ismember( i, setup.activeVar )  );    
     
 % over-sampling SMOTER method
-i = 42;
+i = 43;
 opt.grp(i) = "sampling";
 opt.var(i) = "knn";
 opt.descr(i) = "SMOTER Nearest Neighbours";
@@ -728,7 +727,7 @@ opt.varDef(i) = optimizableVariable( opt.var(i), ...
         'Optimize', ismember( i, setup.activeVar ) );    
 
 % sensor selection parameter
-i = 46;
+i = 47;
 opt.grp(i) = "data";
 opt.var(i) = "sensors";
 opt.descr(i) = "Accelerometer attachment site";
@@ -752,7 +751,7 @@ for j = 1:2^length(curveCodes)-1
     end
 end
 
-i = 47;
+i = 48;
 curveOptions = cellstr( curveOptions );
 opt.grp(i) = "data";
 opt.var(i) = "curves";
@@ -768,7 +767,7 @@ opt.varDef(i) = optimizableVariable( opt.var(i), ...
         
 % predictor selection parameters as binary switches
 for j = 1:nPredictors
-    i = 47+j;
+    i = 48+j;
     opt.grp(i) = "predictor";
     opt.var(i) = "fpc"+num2str(j,'%03d');
     opt.descr(i) = "FPC "+num2str(j,'%03d');
