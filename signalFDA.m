@@ -17,9 +17,13 @@
 
 function [ xFd, xFdPar, df, gcv ] = signalFDA( x, tSpan, opt )
 
-basis = create_bspline_basis( [tSpan(1), tSpan(end)], opt.nBasis, opt.basisOrder );
+basisOrder = str2double( opt.basisOrderAndPenalty(1) );
+penaltyOrder = str2double( opt.basisOrderAndPenalty(3) );
 
-xFdPar = fdPar( basis, opt.penaltyOrder, opt.lambda ); 
+basis = create_bspline_basis( [tSpan(1), tSpan(end)], ...
+                                opt.nBasis, basisOrder );
+
+xFdPar = fdPar( basis, penaltyOrder, opt.lambda ); 
 
 nSets = length( x );
 xFd = cell( nSets, 1 );

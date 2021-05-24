@@ -51,25 +51,25 @@ setup.tLength = 2000; % max duration in milliseconds
 setup.sensors = 'lb';
 setup.curveType = 'noarms';
 
-setup.preLength = 1544;
-setup.postLength = 1944;
+setup.preLength = 2000;
+setup.postLength = 0;
 setup.idxLength = setup.tFreq*(setup.preLength+setup.postLength);
 
 setup.nInnerLoop = 2; % 20
 setup.kInnerFolds = 2;
-setup.nOuterLoop = 10; % 10
+setup.nOuterLoop = 20; % 10
 setup.kOuterFolds = 10; % 10
 
-setup.nRepeats = 4;
-setup.nFit = 10; 
-setup.nSearch = 40;
+setup.nRepeats = 1;
+setup.nFit = 20; 
+setup.nSearch = 20;
 setup.nInterTrace = 0.5*setup.nFit;
 setup.porousness = 0.5; % 0.05;
 setup.window = 2*setup.nSearch;
 setup.verbose = 0;
 setup.showPlots = true;
 
-setup.activeVar = [ 5 6 7 8 17 18 22 23 24 25 29 ];
+setup.activeVar = [ 5 6 7 8 17 18 22 23 24 28 ];
 
 setup.randomSeed = 0;
 
@@ -184,17 +184,17 @@ nJumpTypes = length( jumpTypes );
 outputs = cell( nAlgorithms, nSensors, nJumpTypes );
 models = cell( nAlgorithms, nSensors, nJumpTypes );
 
-for a = 1:nAlgorithms
+for a = [1 3] %1:nAlgorithms
     
     options.model.type = algorithms{ a };
     
     switch a
         case 1
-            setup.activeVar = [ 14 15 16 17 18 22 23 24 25 29 ];
+            setup.activeVar = [ 14 15 16 17 18 22 23 24 28 ];
         case 2
-            setup.activeVar = [ 9 10 11 12 13 17 18 22 23 24 25 29 ];
+            setup.activeVar = [ 9 10 11 12 13 17 18 22 23 24 28 ];
         case 3
-            setup.activeVar = [ 5 6 7 8 17 18 22 23 24 25 29 ];
+            setup.activeVar = [ 5 6 7 8 17 18 22 23 24 28 ];
     end
     options.optimize = defOptimiseVar( setup, options.data.nPredictors );
     options.optimize.partitioning = options.part.outer;
@@ -203,7 +203,7 @@ for a = 1:nAlgorithms
     disp(['Algorithm = ' options.model.type]);
     disp('*******************************');   
     
-    for s = 1
+    for s = 1:nSensors
         
         options.data.sensors = sensors{ s };
 
@@ -211,7 +211,7 @@ for a = 1:nAlgorithms
         disp(['Sensor = ' options.data.sensors]);
         disp('*******************************');
 
-        for j = 2
+        for j = 2:3
             
             subset = data.(jumpTypes{ j });
             options.optimize.nObs = length( data.(jumpTypes{j}).outcome );

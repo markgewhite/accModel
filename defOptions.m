@@ -44,7 +44,7 @@ partitioning.doInversion = false;
 opt.doControlRandomisation = false;
 
 opt.fda.nBasis = 56; % number of bases (18) Ch5=100 Ch6=110 100
-opt.fda.nBasisDensity = 1/20; % bases per time unit 
+opt.fda.nBasisDensity = 0.01; % bases per time unit 
 opt.fda.lambda = 10^(-2.0); % roughness penalty (4.80)
 opt.fda.useDensity = false; % whether of not to use a fixed number of bases
 

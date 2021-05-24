@@ -73,13 +73,19 @@ end
 %   Check if constraints are violated
 % ------------------------------------------------------------
 
+if options.fda.useDensity
+    % calculate the number of basis functions for specified density
+    options.fda.nBasis = ...
+            ceil( options.fda.basisDensity ...
+            *(options.preproc.tLength1 + options.preproc.tLength2) ) ...
+            + options.fda.basisOrder - 2;
+end
+    
 % check if there are enough bases for the retained components
 constraints(1) = options.fpca.nRetainedComp - options.fda.nBasis;
 % check if the time window is not inverted
 constraints(2) = options.preproc.minLength ...
                 - (options.preproc.tLength1 + options.preproc.tLength2);
-% check if penalty order is at least two orders lower than basis order
-constraints(3) = -(options.fda.basisOrder - options.fda.penaltyOrder)+2;
 if any( constraints > 0 )
     obj = 10;
     info = 0;
@@ -525,11 +531,11 @@ for k = 1:nPartitions
     % ------------------------------------------------------------
     
     % check for full column rank
-    HFcn = @(X)[ones(size(X,1),1),X,X.^2];
+    HFcn = @(X)[ ones( size(X,1), 1 ), X, X.^2 ];
     H = HFcn( table2array(trnX) );
     if rank( H ) ~= size( H, 2 )
         % not full column rank (some FPC scores are too small)
-        constraints(5) = 1;
+        constraints(4) = 1;
         info = 0;
         obj = 10;
         return;
