@@ -69,7 +69,7 @@ setup.window = 2*setup.nSearch;
 setup.verbose = 0;
 setup.showPlots = true;
 
-setup.activeVar = [ 5 6 7 8 17 18 22 23 24 28 ];
+setup.activeVar = [ 5 6 15 16 17 21 22 23 27 ];
 
 setup.randomSeed = 0;
 
@@ -190,11 +190,11 @@ for a = [1 3] %1:nAlgorithms
     
     switch a
         case 1
-            setup.activeVar = [ 14 15 16 17 18 22 23 24 28 ];
+            setup.activeVar = [ 12 13 14 15 16 17 21 22 23 27 ];
         case 2
-            setup.activeVar = [ 9 10 11 12 13 17 18 22 23 24 28 ];
+            setup.activeVar = [ 8 9 10 11 15 16 17 21 22 23 27 ];
         case 3
-            setup.activeVar = [ 5 6 7 8 17 18 22 23 24 28 ];
+            setup.activeVar = [ 5 6 7 15 16 17 21 22 23 27 ];
     end
     options.optimize = defOptimiseVar( setup, options.data.nPredictors );
     options.optimize.partitioning = options.part.outer;

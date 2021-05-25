@@ -46,7 +46,7 @@ opt.doControlRandomisation = false;
 opt.fda.nBasis = 56; % number of bases (18) Ch5=100 Ch6=110 100
 opt.fda.nBasisDensity = 0.01; % bases per time unit 
 opt.fda.lambda = 10^(-2.0); % roughness penalty (4.80)
-opt.fda.useDensity = false; % whether of not to use a fixed number of bases
+opt.fda.useDensity = true; % whether of not to use a fixed number of bases
 
 opt.fpca.doFPCApartitioning = true; % allow test data to be used for FPC calculation
 opt.fpca.nRetainedComp = 17; % retained components from FPCA 35
@@ -63,8 +63,10 @@ opt.filter.criterion = 'Threshold';
 opt.filter.rThreshold = 0.1; %10^(-2.81)
 opt.filter.maxPredictors = 30; % max predictors in 1D
 
+opt.data.standardize = false;
 opt.data.doMultiCurves = false;
 opt.data.curves = 'ACC+AD1+AD2+VEL+DIS+PWR';
+
 
 
 strategy = 'B'; % input('Strategy (B/R/S) = ', 's');
@@ -98,7 +100,6 @@ end
 opt.gpr.basis = 'None'; % None
 opt.gpr.kernel = 'SquaredExponential'; % SquaredExponential
 opt.gpr.sigmaN0 = 10^(-0.61); % noise standard deviation (-2.20)
-opt.gpr.standardize = false; % false for Ch. 5
 opt.gpr.constSigma = true;
 opt.gpr.sigmaMin = 1E-4; % 1E-2 for over-sampling
 opt.gpr.sigmaMax = 20;
@@ -108,10 +109,9 @@ opt.svm.kernel = 'Polynomial';
 opt.svm.boxConstraint = 10^(6.59); % 2.57E-2; % 10^0.524;
 opt.svm.kernelScale = 10^(3.52); % 3.79E-2; % 10^0.416;
 opt.svm.epsilon = 10^(-1.63); % 7.53E-1; % 10^-0.820;
-opt.svm.standardize = false;
 
 opt.lr.lambdaLR = 10^(-6.48);
-opt.lr.regularization = 'ridge';
+opt.lr.regularization = 'lasso'; % was ridge
 opt.lr.learner = 'leastsquares';
 
 
@@ -142,7 +142,7 @@ opt.preproc.tLength2 = setup.postLength; % time window after take-off
 opt.preproc.maxLength = setup.tFreq*(setup.preLength+setup.postLength)+1; % max number of points
 opt.preproc.maxLength1 = setup.tFreq*setup.preLength+1; % max number of points
 opt.preproc.maxLength2 = setup.tFreq*setup.postLength+1; % max number of points
-opt.preproc.minLength = 50; % constraint in time intervals (not ms)
+opt.preproc.minLength = 50; % constraint in time intervals (ms)
 
 opt.preproc.fixedSeparation = 250; % fixed separation if required
 opt.preproc.do3dTransform = false;

@@ -454,10 +454,10 @@ for k = 1:nPartitions
     end
     
     % ------------------------------------------------------------
-    %  Manual standardisation, if required
+    %  Predictor standardisation, if required
     % ------------------------------------------------------------
 
-    if options.data.doCustomStandardization
+    if options.data.standardize
         trnX = normalize( trnX, 'zscore' );
         valX = normalize( valX, 'zscore' );
     end
@@ -553,8 +553,7 @@ for k = 1:nPartitions
                             'KernelFunction', options.gpr.kernel, ...
                             'Sigma', options.gpr.sigmaN0, ...
                             'ConstantSigma', options.gpr.constSigma, ...
-                            'SigmaLowerBound', options.gpr.sigmaMin, ...
-                            'Standardize', options.gpr.standardize );
+                            'SigmaLowerBound', options.gpr.sigmaMin );
             catch
                 constraints(2) = 999;
                 info = 0;
@@ -569,8 +568,7 @@ for k = 1:nPartitions
                         'KernelFunction', options.svm.kernel, ...
                         'BoxConstraint', options.svm.boxConstraint, ...
                         'KernelScale', options.svm.kernelScale, ...
-                        'Epsilon', options.svm.epsilon, ...
-                        'Standardize', options.svm.standardize );
+                        'Epsilon', options.svm.epsilon );
                     
         case 'LR-Bespoke'
             trnX = table2array( trnX );
