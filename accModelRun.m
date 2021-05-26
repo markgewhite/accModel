@@ -80,11 +80,13 @@ if options.fda.useDensity
             *(options.preproc.tLength1 + options.preproc.tLength2) ) ...
             + options.fda.basisOrder - 2;
 end
-    
+
+% check if there are a minium number of bases
+constraints(1) = 2 - (options.fda.nBasis - options.fda.basisOrder);
 % check if there are enough bases for the retained components
-constraints(1) = options.fpca.nRetainedComp - options.fda.nBasis;
+constraints(2) = options.fpca.nRetainedComp - options.fda.nBasis;
 % check if the time window is not inverted
-constraints(2) = options.preproc.minLength ...
+constraints(3) = options.preproc.minLength ...
                 - (options.preproc.tLength1 + options.preproc.tLength2);
 if any( constraints > 0 )
     obj = 10;
@@ -374,7 +376,7 @@ if ~options.fpca.doFPCApartitioning
     catch
         obj = NaN;
         info = 0;
-        constraints(2) = 100;
+        constraints(5) = 100;
         return
     end
 end
@@ -429,7 +431,7 @@ for k = 1:nPartitions
         catch
             obj = NaN;
             info = 0;
-            constraints(2) = 100;
+            constraints(5) = 100;
             return
         end
 
@@ -471,7 +473,7 @@ for k = 1:nPartitions
                                 filterPredictors( trnX, trnY, options ); 
     
     if sum( info.selectX(k,:) ) == 0
-        constraints(2) = 99;
+        constraints(6) = 99;
         info = 0;
         obj = NaN;
         return;
