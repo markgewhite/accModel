@@ -32,10 +32,13 @@ opt.data.reducedSampleMethod = 'ReduceSubject';
 opt.data.reducedSize = 25; % number of subjects
 opt.data.reducedSamplesPerSubject = 1; % jumps per subject
 
+opt.data.standardize = setup.standardize;
+opt.data.doMultiCurves = false;
+opt.data.curves = 'ACC+AD1+AD2+VEL+DIS+PWR';
 opt.data.jumpDetection = 'TakeoffVGRF'; % alignment method
 opt.data.doIncludeExtraJumps = true;
 
-opt.preproc.useResultant = true; % resultant (1D) signal?
+opt.preproc.useResultant = false; % resultant (1D) signal?
 opt.preproc.doFixedSeparation = false; % fix gap between windows (flight time)?
 opt.preproc.doPriorRotation = false;
 
@@ -44,12 +47,13 @@ partitioning.doInversion = false;
 opt.doControlRandomisation = false;
 
 opt.fda.nBasis = 56; % number of bases (18) Ch5=100 Ch6=110 100
-opt.fda.nBasisDensity = 0.01; % bases per time unit 
-opt.fda.lambda = 10^(-2.0); % roughness penalty (4.80)
+opt.fda.nBasisDensity = setup.nBasisDensity; % bases per time unit 
 opt.fda.useDensity = true; % whether of not to use a fixed number of bases
+opt.fda.basisOrderAndPenalty = setup.basisOrderAndPenalty; 
+opt.fda.lambda = setup.lambda; % roughness penalty (4.80)
 
 opt.fpca.doFPCApartitioning = true; % allow test data to be used for FPC calculation
-opt.fpca.nRetainedComp = 17; % retained components from FPCA 35
+opt.fpca.nRetainedComp = setup.nRetainedComp; % retained components from FPCA 35
 opt.fpca.nRetainedCompWarp = 3; % retained components from warp
 opt.fpca.doVarimax = false; % varimax rotations?
 
@@ -63,9 +67,7 @@ opt.filter.criterion = 'Threshold';
 opt.filter.rThreshold = 0.1; %10^(-2.81)
 opt.filter.maxPredictors = 30; % max predictors in 1D
 
-opt.data.standardize = false;
-opt.data.doMultiCurves = false;
-opt.data.curves = 'ACC+AD1+AD2+VEL+DIS+PWR';
+
 
 
 
@@ -110,8 +112,8 @@ opt.svm.boxConstraint = 10^(6.59); % 2.57E-2; % 10^0.524;
 opt.svm.kernelScale = 10^(3.52); % 3.79E-2; % 10^0.416;
 opt.svm.epsilon = 10^(-1.63); % 7.53E-1; % 10^-0.820;
 
-opt.lr.lambdaLR = 10^(-6.48);
-opt.lr.regularization = 'lasso'; % was ridge
+opt.lr.lambdaLR = 10^(-3.96);
+opt.lr.regularization = 'ridge'; % was ridge
 opt.lr.learner = 'leastsquares';
 
 
@@ -133,7 +135,6 @@ opt.data.testJumpDetection = 'None'; % test harness to use
 opt.data.syncNoiseSD = 0; 
 opt.data.doUseAccData = true; % whether to use ACC data (or VGRF)
 opt.data.weighting = false;
-opt.data.doCustomStandardization = false;
 opt.data.doIncludeAttributes = false;
 
 opt.preproc.tFreq = setup.tFreq; % sampling frequency

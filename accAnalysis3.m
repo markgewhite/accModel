@@ -48,13 +48,22 @@ setup.tFreq = 0.25; % sampling frequency per unit time
 setup.tNorm = 1000; % points per second
 setup.tLength = 2000; % max duration in milliseconds
 
+% fixed parameter settings
 setup.sensors = 'lb';
 setup.curveType = 'noarms';
 
-setup.preLength = 2000;
-setup.postLength = 0;
+setup.preLength = 2800;
+setup.postLength = 2900;
 setup.idxLength = setup.tFreq*(setup.preLength+setup.postLength);
 
+setup.standardize = false;
+setup.nBasisDensity = 9;
+setup.basisOrderAndPenalty = '6-4';
+setup.lambda = 10^(8.76);
+setup.nRetainedComp = 21;
+
+
+% search settings
 setup.nInnerLoop = 2; % 20
 setup.kInnerFolds = 2;
 setup.nOuterLoop = 20; % 10
@@ -69,7 +78,11 @@ setup.window = 2*setup.nSearch;
 setup.verbose = 0;
 setup.showPlots = true;
 
-setup.activeVar = [ 5 6 15 16 17 21 22 23 27 ];
+
+% search dimensions
+setup.activeVar = [ 5 6 7 15 16 17 21 22 23 27 ];
+
+
 
 setup.randomSeed = 0;
 
@@ -120,7 +133,7 @@ disp(['Roughness = ' num2str(log10(options.fda.lambda))]);
 switch setup.method
     
     case 'GridSearch'
-        [ outputs, models ] = gridSearch2( data, options, setup );
+        outputs = gridSearch2( data, options, setup );
                
     case 'NestedSearch'
         output = smOptimiserNCV( @accModelRun, ...
@@ -128,10 +141,7 @@ switch setup.method
                                  options.optimize, ...
                                  data.noarms, ...
                                  options );
-                             
-        search = [ output.search.XTrace table(output.search.YTrace) ];
-        model = fitglm( search );
-        
+                                     
     case 'Single'
         [ optimum, model, optOutput, srchOutput ] = smOptimiser( ...
                                             @accModelRun, ...
@@ -171,7 +181,7 @@ end
 
 
 
-function [ outputs, models ] = gridSearch2( data, options, setup )
+function outputs = gridSearch2( data, options, setup )
 
 algorithms = options.optimize.varDef(4).Range;
 sensors = data.sensors;
@@ -182,15 +192,15 @@ nSensors = length( sensors );
 nJumpTypes = length( jumpTypes );
 
 outputs = cell( nAlgorithms, nSensors, nJumpTypes );
-models = cell( nAlgorithms, nSensors, nJumpTypes );
 
-for a = [1 3] %1:nAlgorithms
+for a = 2 %[1 3] %1:nAlgorithms
     
     options.model.type = algorithms{ a };
     
     switch a
         case 1
             setup.activeVar = [ 12 13 14 15 16 17 21 22 23 27 ];
+            %setup.activeVar = [ 12 21 23 27 ];
         case 2
             setup.activeVar = [ 8 9 10 11 15 16 17 21 22 23 27 ];
         case 3
@@ -227,18 +237,15 @@ for a = [1 3] %1:nAlgorithms
                                              subset, ...
                                              options );
                                          
-            search = [ outputs{a,s,j}.search.XTrace ...
-                                table(outputs{a,s,j}.search.YTrace) ];
-            models{a,s,j} = fitglm( search );
             
             if ismac 
                 save( fullfile(setup.datapath, ...
                         'smOptimiser Results (MAC).mat'), ...
-                        'outputs', 'models', 'options' );
+                        'outputs', 'options' );
             else
                 save( fullfile(setup.datapath, ...
                         'smOptimiser Results (PC).mat'), ...
-                        'outputs', 'models', 'options' );
+                        'outputs', 'options' );
             end
                                          
         end
