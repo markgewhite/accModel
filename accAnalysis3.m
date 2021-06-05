@@ -193,18 +193,17 @@ nJumpTypes = length( jumpTypes );
 
 outputs = cell( nAlgorithms, nSensors, nJumpTypes );
 
-for a = 2 %[1 3] %1:nAlgorithms
+for a = 1:nAlgorithms
     
     options.model.type = algorithms{ a };
     
     switch a
         case 1
-            setup.activeVar = [ 12 13 14 15 16 17 21 22 23 27 ];
-            %setup.activeVar = [ 12 21 23 27 ];
+            setup.activeVar = [ 12 16 17 21 22 23 27 ];
         case 2
-            setup.activeVar = [ 8 9 10 11 15 16 17 21 22 23 27 ];
+            setup.activeVar = [ 8 9 10 11 16 17 21 22 23 27 ];
         case 3
-            setup.activeVar = [ 5 6 7 15 16 17 21 22 23 27 ];
+            setup.activeVar = [ 5 6 7 16 17 21 22 23 27 ];
     end
     options.optimize = defOptimiseVar( setup, options.data.nPredictors );
     options.optimize.partitioning = options.part.outer;
@@ -213,7 +212,7 @@ for a = 2 %[1 3] %1:nAlgorithms
     disp(['Algorithm = ' options.model.type]);
     disp('*******************************');   
     
-    for s = 1:nSensors
+    for s = 1 %1:nSensors
         
         options.data.sensors = sensors{ s };
 
@@ -221,7 +220,7 @@ for a = 2 %[1 3] %1:nAlgorithms
         disp(['Sensor = ' options.data.sensors]);
         disp('*******************************');
 
-        for j = 2:3
+        for j = 2 %2:3
             
             subset = data.(jumpTypes{ j });
             options.optimize.nObs = length( data.(jumpTypes{j}).outcome );

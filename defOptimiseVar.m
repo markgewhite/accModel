@@ -121,11 +121,11 @@ i = i+1;
 opt.grp(i) = "gpr";
 opt.var(i) = "kernel";
 opt.descr(i) = "GPR Kernel Function";
-opt.lim{i} = [0.5 5.5];
-opt.bounds{i} = [0.51 5.49];
+opt.lim{i} = [0.5 4.5];
+opt.bounds{i} = [0.51 4.49];
 opt.isLog(i) = false;
 opt.isCat(i) = true;
-opt.fcn{i} = { 'Exponential', 'SquaredExponential', ...
+opt.fcn{i} = { 'Exponential', ...
                             'Matern32', 'Matern52', 'RationalQuadratic' };
 opt.varDef(i) = optimizableVariable( opt.var(i), ...
         opt.fcn{i}, 'Type', 'categorical', ...
@@ -150,11 +150,11 @@ i = 8;
 opt.grp(i) = "svm";
 opt.var(i) = "kernel";
 opt.descr(i) = "SVM Kernel Function";
-opt.lim{i} = [0.5 3.5];
-opt.bounds{i} = [0.51 3.49];
+opt.lim{i} = [0.5 2.5];
+opt.bounds{i} = [0.51 2.49];
 opt.isLog(i) = false;
 opt.isCat(i) = true;
-opt.fcn{i} = {'Linear', 'Gaussian', 'Polynomial'};
+opt.fcn{i} = {'Linear', 'Gaussian' };
 opt.varDef(i) = optimizableVariable( opt.var(i), ...
         opt.fcn{i}, 'Type', 'categorical', ...
         'Optimize', ismember( i, setup.activeVar ) );
@@ -163,26 +163,26 @@ i = i+1;
 opt.grp(i) = "svm";
 opt.var(i) = "boxConstraint";
 opt.descr(i) = "log_{10}BC";
-opt.lim{i} = [-6 8];
-opt.bounds{i} = [-6 8];
+opt.lim{i} = [1 8];
+opt.bounds{i} = [1 8];
 opt.isLog(i) = true;
 opt.isCat(i) = false;
 opt.fcn{i} = @(x) 10^x;
 opt.varDef(i) = optimizableVariable( opt.var(i), ...
-        [-7 9], 'Type', 'real', ...
+        [0 9], 'Type', 'real', ...
         'Optimize', ismember( i, setup.activeVar ) );
     
 i = i+1;
 opt.grp(i) = "svm";
 opt.var(i) = "kernelScale";
 opt.descr(i) = "log_{10}KS";
-opt.lim{i} = [-6 8];
-opt.bounds{i} = [-6 8];
+opt.lim{i} = [1 4];
+opt.bounds{i} = [1 4];
 opt.isLog(i) = true;
 opt.isCat(i) = false;
 opt.fcn{i} = @(x) 10^x;
 opt.varDef(i) = optimizableVariable( opt.var(i), ...
-        [-7 9], 'Type', 'real', ...
+        [0 5], 'Type', 'real', ...
         'Optimize', ismember( i, setup.activeVar ) );
     
 i = i+1;
@@ -203,13 +203,13 @@ i = 12;
 opt.grp(i) = "lr";
 opt.var(i) = "lambdaLR";
 opt.descr(i) = "log_{10}\lambda_{LR}";
-opt.lim{i} = [-10 10];
-opt.bounds{i} = [-10 10];
+opt.lim{i} = [-5 5];
+opt.bounds{i} = [-5 5];
 opt.isLog(i) = true;
 opt.isCat(i) = false;
 opt.fcn{i} = @(x) 10^x;
 opt.varDef(i) = optimizableVariable( opt.var(i), ...
-        [-12 12], 'Type', 'real', ...
+        [-6 6], 'Type', 'real', ...
         'Optimize', ismember( i, setup.activeVar ) );
 
 i = i+1;
@@ -259,12 +259,12 @@ opt.grp(i) = "preproc";
 opt.var(i) = "tLength1";
 opt.descr(i) = "\it t_{\rmpre} \rm(ms)";
 opt.lim{i} = [0, 3000];
-opt.bounds{i} = [6.51 36.49];
+opt.bounds{i} = [5.51 26.49];
 opt.isLog(i) = false;
 opt.isCat(i) = false;
-opt.fcn{i} = (-500:100:3500);
+opt.fcn{i} = (500:100:3500);
 opt.varDef(i) = optimizableVariable( opt.var(i), ...
-        [1 41], 'Type', 'integer', ...
+        [1 31], 'Type', 'integer', ...
         'Optimize', ismember( i, setup.activeVar ) );
     
 i = i+1;
@@ -272,12 +272,12 @@ opt.grp(i) = "preproc";
 opt.var(i) = "tLength2";
 opt.descr(i) = "\it t_{\rmpost} \rm(ms)";
 opt.lim{i} = [0, 3000];
-opt.bounds{i} = [6.51 36.49];
+opt.bounds{i} = [5.51 26.49];
 opt.isLog(i) = false;
 opt.isCat(i) = false;
-opt.fcn{i} = (-500:100:3500);
+opt.fcn{i} = (500:100:3500);
 opt.varDef(i) = optimizableVariable( opt.var(i), ...
-        [1 41], 'Type', 'integer', ...
+        [1 31], 'Type', 'integer', ...
         'Optimize', ismember( i, setup.activeVar ) );
     
 i = i+1;
@@ -327,13 +327,13 @@ i = 21;
 opt.grp(i) = "fda";
 opt.var(i) = "basisDensity";
 opt.descr(i) = "Basis Function Density (fn\cdots^{-1})";
-opt.lim{i} = [4, 20];
-opt.bounds{i} = [3.51 20.49];
+opt.lim{i} = [0, 20];
+opt.bounds{i} = [4.51 15.49];
 opt.isLog(i) = false;
 opt.isCat(i) = false;
 opt.fcn{i} = @(x) x/1000;
 opt.varDef(i) = optimizableVariable( opt.var(i), ...
-        [2 22], 'Type', 'integer', ...
+        [1, 20], 'Type', 'integer', ...
         'Optimize', ismember( i, setup.activeVar ) );
     
 i = i+1;
@@ -410,12 +410,12 @@ opt.grp(i) = "fpca";
 opt.var(i) = "nRetainedComp";
 opt.descr(i) = "Number of Retained FPCs";
 opt.lim{i} = [0, 30];
-opt.bounds{i} = [2.51 30.49];
+opt.bounds{i} = [9.51 25.49];
 opt.isLog(i) = false;
 opt.isCat(i) = false;
 opt.fcn{i} = @(x) x;
 opt.varDef(i) = optimizableVariable( opt.var(i), ...
-        [1, 35], 'Type', 'integer', ...
+        [9, 26], 'Type', 'integer', ...
         'Optimize', ismember( i, setup.activeVar ) );
 
 i = i+1;    
