@@ -52,7 +52,9 @@ setup.tLength = 2000; % max duration in milliseconds
 setup.sensors = 'lb';
 setup.curveType = 'noarms';
 
-setup.preLength = 2800;
+setup.useResultant = true;
+
+setup.preLength = 2900;
 setup.postLength = 2900;
 setup.idxLength = setup.tFreq*(setup.preLength+setup.postLength);
 
@@ -60,7 +62,7 @@ setup.standardize = false;
 setup.nBasisDensity = 9;
 setup.basisOrderAndPenalty = '6-4';
 setup.lambda = 10^(8.76);
-setup.nRetainedComp = 21;
+setup.nRetainedComp = 17;
 
 
 % search settings

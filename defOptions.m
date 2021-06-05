@@ -38,7 +38,7 @@ opt.data.curves = 'ACC+AD1+AD2+VEL+DIS+PWR';
 opt.data.jumpDetection = 'TakeoffVGRF'; % alignment method
 opt.data.doIncludeExtraJumps = true;
 
-opt.preproc.useResultant = false; % resultant (1D) signal?
+opt.preproc.useResultant = setup.useResultant; % resultant (1D) signal?
 opt.preproc.doFixedSeparation = false; % fix gap between windows (flight time)?
 opt.preproc.doPriorRotation = false;
 
