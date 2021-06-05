@@ -340,11 +340,11 @@ i = i+1;
 opt.grp(i) = "fda";
 opt.var(i) = "basisOrderAndPenalty";
 opt.descr(i) = "Basis Function Order & Penalty Order";
-opt.lim{i} = [1, 6];
-opt.bounds{i} = [0.51 6.49];
+opt.lim{i} = [1, 2];
+opt.bounds{i} = [0.51 2.49];
 opt.isLog(i) = false;
 opt.isCat(i) = false;
-opt.fcn{i} = { '4-2', '5-2', '5-3', '6-2', '6-3', '6-4' };
+opt.fcn{i} = { '4-2', '6-4' };
 opt.varDef(i) = optimizableVariable( opt.var(i), ...
         opt.fcn{i}, 'Type', 'categorical', ...
         'Optimize', ismember( i, setup.activeVar ) );

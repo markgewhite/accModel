@@ -59,7 +59,7 @@ setup.postLength = 2900;
 setup.idxLength = setup.tFreq*(setup.preLength+setup.postLength);
 
 setup.standardize = false;
-setup.nBasisDensity = 9;
+setup.basisDensity = 8/1000;
 setup.basisOrderAndPenalty = '6-4';
 setup.lambda = 10^(8.76);
 setup.nRetainedComp = 17;
@@ -82,7 +82,9 @@ setup.showPlots = true;
 
 
 % search dimensions
-setup.activeVar = [ 5 6 7 15 16 17 21 22 23 27 ];
+setup.modelType = 'SVM-Bespoke';
+%setup.activeVar = [ 16 17 22 23 27 ];
+setup.activeVar = [ 9 16 17 22 23 27 ];
 
 
 
@@ -201,11 +203,23 @@ for a = 1:nAlgorithms
     
     switch a
         case 1
-            setup.activeVar = [ 12 16 17 21 22 23 27 ];
+            %setup.activeVar = [ 12 16 17 21 22 23 27 ];
+            %setup.activeVar = [ 16 17 22 23 27 ];
+            setup.activeVar = [ 12 16 17 ];
+            options.fda.basisDensity = 7/1000;
+            options.fpca.nRetainedComp = 24;
+            options.fda.lambda = 10^(-9.48);
         case 2
-            setup.activeVar = [ 8 9 10 11 16 17 21 22 23 27 ];
+            %setup.activeVar = [ 8 9 10 11 16 17 21 22 23 27 ];
+            setup.activeVar = [ 16 17 23 ];
+            options.fda.basisDensity = 8/1000;
+            options.fpca.nRetainedComp = 24;
         case 3
-            setup.activeVar = [ 5 6 7 16 17 21 22 23 27 ];
+            %setup.activeVar = [ 5 6 7 16 17 21 22 23 27 ];
+            %setup.activeVar = [ 16 17 21 22 23 27 ];
+            setup.activeVar = [ 16 17 23 ];
+            options.fda.basisDensity = 8/1000;
+            options.fpca.nRetainedComp = 23;
     end
     options.optimize = defOptimiseVar( setup, options.data.nPredictors );
     options.optimize.partitioning = options.part.outer;

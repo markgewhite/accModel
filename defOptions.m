@@ -23,7 +23,7 @@ opt.optimize.doNestedSearch = true;
 opt.generateDistributions = true;
 opt.plotErrorDist = false;
 
-opt.model.type = 'GPR-Bespoke';
+opt.model.type = setup.modelType;
 opt.nRuns = 50;
 opt.reportInterval = 1;
 
@@ -47,7 +47,7 @@ partitioning.doInversion = false;
 opt.doControlRandomisation = false;
 
 opt.fda.nBasis = 56; % number of bases (18) Ch5=100 Ch6=110 100
-opt.fda.nBasisDensity = setup.nBasisDensity; % bases per time unit 
+opt.fda.basisDensity = setup.basisDensity; % bases per time unit 
 opt.fda.useDensity = true; % whether of not to use a fixed number of bases
 opt.fda.basisOrderAndPenalty = setup.basisOrderAndPenalty; 
 opt.fda.lambda = setup.lambda; % roughness penalty (4.80)
@@ -99,21 +99,21 @@ end
 %   Model Hyperparameters
 % ************************************************************************
 
-opt.gpr.basis = 'None'; % None
-opt.gpr.kernel = 'SquaredExponential'; % SquaredExponential
-opt.gpr.sigmaN0 = 10^(-0.61); % noise standard deviation (-2.20)
+opt.gpr.basis = 'None'; 
+opt.gpr.kernel = 'Exponential'; 
+opt.gpr.sigmaN0 = 10^(-0.48);
 opt.gpr.constSigma = true;
 opt.gpr.sigmaMin = 1E-4; % 1E-2 for over-sampling
 opt.gpr.sigmaMax = 20;
 opt.gpr.lengthScaling = false;
 
-opt.svm.kernel = 'Polynomial';
-opt.svm.boxConstraint = 10^(6.59); % 2.57E-2; % 10^0.524;
-opt.svm.kernelScale = 10^(3.52); % 3.79E-2; % 10^0.416;
-opt.svm.epsilon = 10^(-1.63); % 7.53E-1; % 10^-0.820;
+opt.svm.kernel = 'Gaussian';
+opt.svm.boxConstraint = 10^(3.29);
+opt.svm.kernelScale = 10^(2.18); 
+opt.svm.epsilon = 10^(-0.73); 
 
-opt.lr.lambdaLR = 10^(-3.96);
-opt.lr.regularization = 'ridge'; % was ridge
+opt.lr.lambdaLR = 10^(-1.62);
+opt.lr.regularization = 'ridge'; 
 opt.lr.learner = 'leastsquares';
 
 
