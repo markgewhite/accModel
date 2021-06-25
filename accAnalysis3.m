@@ -77,7 +77,7 @@ setup.nSearch = 20;
 setup.nInterTrace = 0.5*setup.nFit;
 setup.porousness = 0.5; % 0.05;
 setup.window = 2*setup.nSearch;
-setup.verbose = 0;
+setup.verbose = 2;
 setup.showPlots = true;
 
 
@@ -120,16 +120,6 @@ data.noarms.takeoffACC = detectJumpTakeoff( ...
                                     options.preproc.takeoff );
                                 
 
-% summarise key information
-disp(['Basis = ' options.gpr.basis]);
-disp(['Kernel = ' options.gpr.kernel]);
-disp(['Sigma = ' num2str(log10(options.gpr.sigmaN0))]);
-disp(['PreTime = ' num2str(setup.preLength)]);
-disp(['PostTime = ' num2str(setup.postLength)]);
-disp(['nBasis = ' num2str(options.fda.nBasis)]);
-disp(['Roughness = ' num2str(log10(options.fda.lambda))]);
-
-
 % ------------------------------------------------------------
 %  Run the model
 % ------------------------------------------------------------
@@ -167,16 +157,7 @@ switch setup.method
                                    hp );
                                          
     case 'Holdout'
-        trnSelect = (attributes.(curveType).dataset==1);
-        tstSelect = (attributes.(curveType).dataset==2);
-        hp = [];
-        [ ~, ~, output ] = accModelRun(  ...
-                                   data, ...
-                                   'Specified', ...
-                                   trnSelect, ...
-                                   tstSelect, ...
-                                   options, ...
-                                   hp );
+        outputs = holdoutTest( data, options );
         
 end
 
@@ -203,6 +184,7 @@ for a = 1:nAlgorithms
     
     switch a
         case 1
+            %setup.activeVar = [ 12 13 14 15 16 17 21 22 23 27 ];
             %setup.activeVar = [ 12 16 17 21 22 23 27 ];
             %setup.activeVar = [ 16 17 22 23 27 ];
             setup.activeVar = [ 12 16 17 ];
@@ -210,18 +192,24 @@ for a = 1:nAlgorithms
             options.fpca.nRetainedComp = 24;
             options.fda.lambda = 10^(-9.48);
         case 2
+            %setup.activeVar = [ 8 9 10 11 15 16 17 21 22 23 27 ];
             %setup.activeVar = [ 8 9 10 11 16 17 21 22 23 27 ];
+            %setup.activeVar = [ 9 16 17 21 22 23 27 ];
             setup.activeVar = [ 16 17 23 ];
             options.fda.basisDensity = 8/1000;
             options.fpca.nRetainedComp = 24;
         case 3
+            %setup.activeVar = [ 5 6 7 15 16 17 21 22 23 27 ];
             %setup.activeVar = [ 5 6 7 16 17 21 22 23 27 ];
             %setup.activeVar = [ 16 17 21 22 23 27 ];
             setup.activeVar = [ 16 17 23 ];
             options.fda.basisDensity = 8/1000;
             options.fpca.nRetainedComp = 23;
     end
+    
     options.optimize = defOptimiseVar( setup, options.data.nPredictors );
+    options.optimize.nObs = length( data.(setup.curveType).outcome );
+    options.optimize.subjects = data.(setup.curveType).subject;
     options.optimize.partitioning = options.part.outer;
     
     disp('*******************************');
@@ -239,8 +227,6 @@ for a = 1:nAlgorithms
         for j = 2 %2:3
             
             subset = data.(jumpTypes{ j });
-            options.optimize.nObs = length( data.(jumpTypes{j}).outcome );
-            options.optimize.subjects = subset.subject;
             
             disp('*******************************');
             disp(['Jump Type = ' jumpTypes{j}]);
@@ -273,3 +259,91 @@ end
 
 end
 
+
+function outputs = holdoutTest( data, options )
+
+algorithms = options.optimize.varDef(4).Range;
+sensors = data.sensors;
+jumpTypes = data.curves;
+
+nAlgorithms = length( algorithms );
+nSensors = length( sensors );
+nJumpTypes = length( jumpTypes );
+
+outputs = cell( nAlgorithms, nSensors, nJumpTypes );
+
+for a = 1:nAlgorithms
+    
+    options.model.type = algorithms{ a };
+    
+    switch a
+        
+        case 1
+            options.preproc.tLength1 = 2800;
+            options.preproc.tLength1 = 2700;
+            options.fda.basisDensity = 7/1000;
+            options.fda.basisOrderAndPenalty = '6-4';
+            options.fda.lambda = 10^(-9.5);
+            options.fpca.nRetainedComp = 24;
+            options.data.standardize = false;
+            options.lr.lambdaLR = 10^(-1.02);
+            options.lr.regularization = 'ridge'; 
+            options.lr.learner = 'leastsquares';
+
+        case 2
+            options.preproc.tLength1 = 1200;
+            options.preproc.tLength1 = 1200;
+            options.fda.basisDensity = 8/1000;
+            options.fda.basisOrderAndPenalty = '6-4';
+            options.fda.lambda = 10^(-9.0);
+            options.fpca.nRetainedComp = 24;
+            options.data.standardize = false;
+            options.svm.kernel = 'Gaussian';
+            options.svm.boxConstraint = 10^(3.3);
+            options.svm.kernelScale = 10^(2.2); 
+            options.svm.epsilon = 10^(-0.7);
+            
+        case 3
+            options.preproc.tLength1 = 1200;
+            options.preproc.tLength1 = 2800;
+            options.fda.basisDensity = 8/1000;
+            options.fda.basisOrderAndPenalty = '6-4';
+            options.fda.lambda = 10^(-8.4);
+            options.fpca.nRetainedComp = 23;
+            options.data.standardize = false;
+            options.gpr.basis = 'None'; 
+            options.gpr.kernel = 'Exponential'; 
+            options.gpr.sigmaN0 = 10^(-0.5);
+            
+    end
+    
+    disp(['Algorithm = ' options.model.type]);
+    
+    for s = 1 %1:nSensors
+        
+        options.data.sensors = sensors{ s };
+
+        disp(['Sensor = ' options.data.sensors]);
+
+        for j = 2 %2:3
+            
+            subset = data.(jumpTypes{ j });
+            
+            trnID = ~subset.isHoldout;
+            
+            disp(['Jump Type = ' jumpTypes{j}]);
+            
+            [ ~, ~, outputs{a,s,j} ] = accModelRun(  ...
+                                               [], ...
+                                               subset, ...
+                                               options, ...
+                                               trnID );
+
+                                                                                 
+        end
+        
+    end
+    
+end
+
+end

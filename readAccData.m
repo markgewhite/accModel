@@ -68,6 +68,8 @@ for j = 1:size( signal.raw, 2 )
                                data.(curveType).outcome, ...
                                data.(curveType).subject, ...
                                opt.nPerfLevels );
+                           
+    data.(curveType).isHoldout = (attributes.(curveType).dataset==2);
     
 end
 

@@ -26,7 +26,8 @@ function [ results, outputs ] = combineOutput( outputs, setup )
 
 [ nModels, nSensors, nTypes ] = size( outputs );
 
-results.valRMSE = [];
+results.outerRMSE = [];
+results.innerRMSE = [];
 results.params.data = [];
 results.params.lr = [];
 results.params.svm = [];
@@ -34,6 +35,9 @@ results.params.gpr = [];
 results.glmCoeff = [];
 results.glmCoeffSelect = [];
 nDataParams = 7;
+
+nSearch = setup.nSearch;
+nInter = setup.nInterTrace;
 
 for i = 1:nModels
     
@@ -45,10 +49,19 @@ for i = 1:nModels
                 
                 out = outputs{i,j,k}; % shorthand
                 
-                % update validation RMSE table
-                results.valRMSE = updateValRMSE( results.valRMSE, ...
+                % update outer validation RMSE table
+                results.outerRMSE = updateValRMSE( results.outerRMSE, ...
                                          i, j, k, ...
                                          out.valFolds );
+                % identify the search observations that were at est optimum
+                searchID = nSearch:nSearch:length(out.search.YTrace);
+                optID = ( mod(0:length(searchID)-1, nSearch) >= nSearch-nInter)';
+                innerRMSE = out.search.YTrace( optID );
+                
+                % update inner validation RMSE table
+                results.innerRMSE = updateValRMSE( results.innerRMSE, ...
+                                         i, j, k, ...
+                                         innerRMSE );
                                                                                       
                 % update optimal data parameters table
                 dataParams = ...

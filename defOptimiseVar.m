@@ -42,6 +42,7 @@ opt.psoBorderReal = 0.1;
 
 opt.showPlots = setup.showPlots;
 opt.useSubPlots = true;
+opt.layout = 'square';
 
 opt.nRepeats = setup.nRepeats;
 opt.nInterTrace = setup.nInterTrace;
@@ -215,7 +216,7 @@ opt.varDef(i) = optimizableVariable( opt.var(i), ...
 i = i+1;
 opt.grp(i) = "lr";
 opt.var(i) = "regularization";
-opt.descr(i) = "Regularisation Method";
+opt.descr(i) = "Regularization Method";
 opt.lim{i} = [0.5 2.5];
 opt.bounds{i} = [0.51 2.49];
 opt.isLog(i) = false;
@@ -243,7 +244,7 @@ opt.varDef(i) = optimizableVariable( opt.var(i), ...
 i = 15;
 opt.grp(i) = "data";
 opt.var(i) = "standardize";
-opt.descr(i) = "Standardise";
+opt.descr(i) = "Standardize";
 opt.lim{i} = [0.5 2.5];
 opt.bounds{i} = [0.51 2.49];
 opt.isLog(i) = false;

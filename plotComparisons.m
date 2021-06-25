@@ -7,7 +7,7 @@
 % ************************************************************************
 
 path = '/Users/markgewhite/Google Drive/PhD/Studies/Jumps/Analysis/PLOS ONE';
-filename = 'Outer Validation RMSE (P1-017).xlsx';
+filename = 'Outer Validation RMSE (FINAL).xlsx';
 varTypes = { 'char', 'char', 'char', 'char', 'single', 'double', 'double' };
 
 excelOpts = spreadsheetImportOptions( 'NumVariables', 7, ...
@@ -17,41 +17,42 @@ excelOpts = spreadsheetImportOptions( 'NumVariables', 7, ...
                                      'PreserveVariableNames', true, ...
                                      'VariableTypes', varTypes );
 
+jumptypeOrder = { 'WOA', 'WA' };
+sensorOrder = { 'LB', 'UB', 'LS', 'RS' };
 signalOrder = { 'Resultant', 'Triaxial' };
 modelOrder = { 'LR', 'SVM', 'GPR' };
-sensorOrder = { 'LB', 'UB', 'LS', 'RS' };
-jumptypeOrder = { 'WOA', 'WA' };
 
 data = readtable( fullfile( path, filename ), excelOpts );
+data.JumpType = categorical( data.JumpType, jumptypeOrder );
+data.Sensor = categorical( data.Sensor, sensorOrder );
 data.Signal = categorical( data.Signal, signalOrder );
 data.Model = categorical( data.Model, modelOrder );
-data.Sensor = categorical( data.Sensor, sensorOrder );
-data.JumpType = categorical( data.JumpType, jumptypeOrder );
 
 
 figObj = figure;
 
-% signal box plot
+% jump type box plot
 ax(1) = subplot(2,4,1);
-boxObj{1} = boxchart(  ax(1), data.Signal, data.ValRMSE );
-xlabel( ax(1), 'Signal Representation');
-ylabel( ax(1), 'Outer Val. RMSE W\cdotkg^{-1}');   
-
-% model box plot
-ax(2) = subplot(2,4,2);
-boxObj{2} = boxchart(  ax(2), data.Model, data.ValRMSE );
-xlabel( ax(2), 'Model Type');
+boxObj{1} = boxchart(  ax(1), data.JumpType, data.ValRMSE );
+xlabel( ax(1), 'Jump Type');
+ax(1).XTickLabel = { 'CMJ_{NA}', 'CMJ_{A}' }; 
 
 % sensor box plot
-ax(3) = subplot(2,4,3);
-boxObj{3} = boxchart(  ax(3), data.Sensor, data.ValRMSE );
-xlabel( ax(3), 'Sensor Location');
+ax(2) = subplot(2,4,2);
+boxObj{2} = boxchart(  ax(2), data.Sensor, data.ValRMSE );
+xlabel( ax(2), 'Sensor Location');
 
-% jump type box plot
+% signal box plot
+ax(3) = subplot(2,4,3);
+boxObj{3} = boxchart(  ax(3), data.Signal, data.ValRMSE );
+xlabel( ax(3), 'Signal Representation');
+ylabel( ax(3), 'Outer Val. RMSE W\cdotkg^{-1}');   
+
+% model box plot
 ax(4) = subplot(2,4,4);
-boxObj{4} = boxchart(  ax(4), data.JumpType, data.ValRMSE );
-xlabel( ax(4), 'Jump Type');
-ax(4).XTickLabel = { 'CMJ_{NA}', 'CMJ_{A}' }; 
+boxObj{4} = boxchart(  ax(4), data.Model, data.ValRMSE );
+xlabel( ax(4), 'Model Type');
+
 
 % model & sensor combination plot
 data.ModelSensor = categorical( data.Sensor.*data.Model );
